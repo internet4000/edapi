@@ -35,32 +35,21 @@ app.get('/releases/:id', (req, res) => {
   
   redis.get(key, function (err, result) {
     if (err) {
+      console.log('no cache')
       console.error(err)
-    } else {
+      db.getRelease(id, (err, data) => {
+        console.log('setting cache', key)
+        redis.set(key, JSON.stringify(data), 'EX', 60)
+        res.send(data)
+      })
+    } else if (result) {
+      console.log('found cache')
       console.log(result)
+      res.send(JSON.parse(result))
+    } else {
+      res.send({error: 'something went wrong…'})
     }
   })
-  
-  db.getRelease(id, (err, data) => {
-		console.log('setting cache', key, data)
-    redis.set(key, 3600, 'EX', data)
-		res.send(data)
-	})
-
-	// return redis
-	// 	.get(key)
-	// 	.then((result) => {
-	// 		console.log(`found cache`, result)
-	// 		res.send(result)
-	// 	})
-	// 	.catch(() => {
-	// 		console.log('no cache')
-	// 		db.getRelease(id, function(err, data) {
-	// 			redis.set(key, 3600, 'EX', data)
-	// 			console.log('setting cache', key)
-	// 			res.send(data)
-	// 		})
-	// 	})
 })
 
 var listener = app.listen(process.env.PORT, function() {
