@@ -1,7 +1,7 @@
 dependencies:
   disconnect: 1.2.1
   express: 4.16.3
-  redis: 2.8.0
+  ioredis: 3.2.2
 packages:
   /accepts/1.3.5:
     dependencies:
@@ -16,6 +16,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-ml9pkFGx5wczKPKgCJaLZOopVdI=
+  /bluebird/3.5.1:
+    dev: false
+    resolution:
+      integrity: sha512-MKiLiV+I1AA596t9w1sQJ8jkiSr5+ZKi0WKrYGUn6d1Fx+Ij4tIj+m2WMQSGczs5jZVxV339chE8iwk6F64wjA==
   /body-parser/1.18.2:
     dependencies:
       bytes: 3.0.0
@@ -39,6 +43,12 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=
+  /cluster-key-slot/1.0.8:
+    dev: false
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-dlRVYIWmUzCTKi6LWXb44tCz5BQ=
   /content-disposition/0.5.2:
     dev: false
     engines:
@@ -67,6 +77,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
+  /denque/1.2.3:
+    dev: false
+    engines:
+      node: '>=0.10'
+    resolution:
+      integrity: sha512-BOjyD1zPf7gqgXlXBCnCsz84cbRNfqpQNvWOUiw3Onu9s7a2afW2LyHzctoie/2KELfUoZkNHTnW02C3hCU20w==
   /depd/1.1.1:
     dev: false
     engines:
@@ -91,10 +107,6 @@ packages:
       node: '>= 0.12.0'
     resolution:
       integrity: sha1-/nVTj2TTjoIaRrAb/e5enCPEus4=
-  /double-ended-queue/2.1.0-0:
-    dev: false
-    resolution:
-      integrity: sha1-ED01J/0xUo9AGIEwyEHv3XgmTlw=
   /ee-first/1.1.1:
     dev: false
     resolution:
@@ -166,6 +178,10 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha512-Y1GUDo39ez4aHAw7MysnUD5JzYX+WaIj8I57kO3aEPT1fFRL4sr7mjei97FgnwhAyyzRYmQZaTHb2+9uZ1dPtg==
+  /flexbuffer/0.0.6:
+    dev: false
+    resolution:
+      integrity: sha1-A5/fI/iCPkQMOPMnfm/vEXQhWzA=
   /forwarded/0.1.2:
     dev: false
     engines:
@@ -199,12 +215,107 @@ packages:
     dev: false
     resolution:
       integrity: sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
+  /ioredis/3.2.2:
+    dependencies:
+      bluebird: 3.5.1
+      cluster-key-slot: 1.0.8
+      debug: 2.6.9
+      denque: 1.2.3
+      flexbuffer: 0.0.6
+      lodash.assign: 4.2.0
+      lodash.bind: 4.2.1
+      lodash.clone: 4.5.0
+      lodash.clonedeep: 4.5.0
+      lodash.defaults: 4.2.0
+      lodash.difference: 4.5.0
+      lodash.flatten: 4.4.0
+      lodash.foreach: 4.5.0
+      lodash.isempty: 4.4.0
+      lodash.keys: 4.2.0
+      lodash.noop: 3.0.1
+      lodash.partial: 4.2.1
+      lodash.pick: 4.4.0
+      lodash.sample: 4.2.1
+      lodash.shuffle: 4.2.0
+      lodash.values: 4.3.0
+      redis-commands: 1.3.5
+      redis-parser: 2.6.0
+    dev: false
+    engines:
+      iojs: '>= 1.0.0'
+      node: '>= 0.10.16'
+    resolution:
+      integrity: sha512-g+ShTQYLsCcOUkNOK6CCEZbj3aRDVPw3WOwXk+LxlUKvuS9ujEqP2MppBHyRVYrNNFW/vcPaTBUZ2ctGNSiOCA==
   /ipaddr.js/1.6.0:
     dev: false
     engines:
       node: '>= 0.10'
     resolution:
       integrity: sha1-4/o1e3c9phnybpXwSdBVxyeW+Gs=
+  /lodash.assign/4.2.0:
+    dev: false
+    resolution:
+      integrity: sha1-DZnzzNem0mHRm9rrkkUAXShYCOc=
+  /lodash.bind/4.2.1:
+    dev: false
+    resolution:
+      integrity: sha1-euMBfpOWIqwxt9fX3LGzTbFpDTU=
+  /lodash.clone/4.5.0:
+    dev: false
+    resolution:
+      integrity: sha1-GVhwRQ9aExkkeN9Lw9I9LeoZB7Y=
+  /lodash.clonedeep/4.5.0:
+    dev: false
+    resolution:
+      integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
+  /lodash.defaults/4.2.0:
+    dev: false
+    resolution:
+      integrity: sha1-0JF4cW/+pN3p5ft7N/bwgCJ0WAw=
+  /lodash.difference/4.5.0:
+    dev: false
+    resolution:
+      integrity: sha1-nMtOUF1Ia5FlE0V3KIWi3yf9AXw=
+  /lodash.flatten/4.4.0:
+    dev: false
+    resolution:
+      integrity: sha1-8xwiIlqWMtK7+OSt2+8kCqdlph8=
+  /lodash.foreach/4.5.0:
+    dev: false
+    resolution:
+      integrity: sha1-Gmo16s5AEoDH8G3d7DUWWrJ+PlM=
+  /lodash.isempty/4.4.0:
+    dev: false
+    resolution:
+      integrity: sha1-b4bL7di+TsmHvpqvM8loTbGzHn4=
+  /lodash.keys/4.2.0:
+    dev: false
+    resolution:
+      integrity: sha1-oIYCrBLk+4P5H8H7ejYKTZujUgU=
+  /lodash.noop/3.0.1:
+    dev: false
+    resolution:
+      integrity: sha1-OBiPTWUKOkdCWEObluxFsyYXEzw=
+  /lodash.partial/4.2.1:
+    dev: false
+    resolution:
+      integrity: sha1-SfPYz9qjv/izqR0SfpIyRUGJYdQ=
+  /lodash.pick/4.4.0:
+    dev: false
+    resolution:
+      integrity: sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
+  /lodash.sample/4.2.1:
+    dev: false
+    resolution:
+      integrity: sha1-XkKRsMdT+hq+sKq4+ynfG2bwf20=
+  /lodash.shuffle/4.2.0:
+    dev: false
+    resolution:
+      integrity: sha1-FFtQU8+HX29cKjP0i26ZSMbse0s=
+  /lodash.values/4.3.0:
+    dev: false
+    resolution:
+      integrity: sha1-o6bCsOvsxcLLocF+bmIP6BtT00c=
   /media-typer/0.3.0:
     dev: false
     engines:
@@ -313,16 +424,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-Uu0J2srBCPGmMcB+m2mUHnoZUEs=
-  /redis/2.8.0:
-    dependencies:
-      double-ended-queue: 2.1.0-0
-      redis-commands: 1.3.5
-      redis-parser: 2.6.0
-    dev: false
-    engines:
-      node: '>=0.10.0'
-    resolution:
-      integrity: sha512-M1OkonEQwtRmZv4tEWF2VgpG0JWJ8Fv1PhlgT5+B+uNq2cA3Rt1Yt/ryoR+vQNOQcIEgdCdfH0jr3bDpihAw1A==
   /safe-buffer/5.1.1:
     dev: false
     resolution:
@@ -405,4 +506,4 @@ shrinkwrapVersion: 3
 specifiers:
   disconnect: ^1.2.1
   express: ^4.16.3
-  redis: ^2.8.0
+  ioredis: ^3.2.2
