@@ -8,27 +8,12 @@ var db = new Discogs('ExplorerDiscogsApi/0.0.0').database()
 
 // init redis cache
 const Redis = require('ioredis')
-
 var { REDIS_URL } = process.env
 if (REDIS_URL === undefined) {
-	console.error('Please set the COMPOSE_REDIS_URL environment variable')
+	console.error('Please set the REDIS_URL environment variable')
 	process.exit(1)
 }
-
 const redis = new Redis(REDIS_URL)
-// express cache middleware function
-// function cache(req, res, next) {
-//     const id = req.params.id;
-//     redisClient.get(`release_${id}`, function (err, data) {
-//         if (err) throw err;
-
-//         if (data != null) {
-//             res.send(respond(org, data));
-//         } else {
-//             next();
-//         }
-//     });
-// }
 
 // index route
 app.get('/', function(request, response) {
