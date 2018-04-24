@@ -13,11 +13,21 @@ if (REDIS_URL === undefined) {
   console.error("Please set the COMPOSE_REDIS_URL environment variable");
   process.exit(1);
 }
-let redisClient = redis.createClient(REDIS_URL, {
-  tls: {
-    servername: new URL(REDIS_URL).hostname
-  }
-})
+let redisClient = redis.createClient(REDIS_URL)
+
+// express cache middleware function
+// function cache(req, res, next) {
+//     const id = req.params.id;
+//     redisClient.get(`release_${id}`, function (err, data) {
+//         if (err) throw err;
+
+//         if (data != null) {
+//             res.send(respond(org, data));
+//         } else {
+//             next();
+//         }
+//     });
+// }
 
 // index route
 app.get('/', function (request, response) {
@@ -25,10 +35,15 @@ app.get('/', function (request, response) {
 })
 
 app.get('/releases/:id', async (req, res) => {
-  db.getRelease(req.params.id, function(err, data) {
-    console.log(data)
-    res.send(data)
-  })
+  res.send(req.params)
+  // const key = `release_${req.params.id}`
+  // redisClient.get(key, (err, result) => {
+  //   if (err)
+  // })
+  // db.getRelease(req.params.id, function(err, data) {
+  //   console.log(data)
+  //   res.send(data)
+  // })
 })
 
 var listener = app.listen(process.env.PORT, function () {

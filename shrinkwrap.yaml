@@ -1,6 +1,7 @@
 dependencies:
   disconnect: 1.2.1
   express: 4.16.3
+  redis: 2.8.0
 packages:
   /accepts/1.3.5:
     dependencies:
@@ -90,6 +91,10 @@ packages:
       node: '>= 0.12.0'
     resolution:
       integrity: sha1-/nVTj2TTjoIaRrAb/e5enCPEus4=
+  /double-ended-queue/2.1.0-0:
+    dev: false
+    resolution:
+      integrity: sha1-ED01J/0xUo9AGIEwyEHv3XgmTlw=
   /ee-first/1.1.1:
     dev: false
     resolution:
@@ -298,6 +303,26 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-vNYMd9Prk83gBQKVw/N5OJvIj4k=
+  /redis-commands/1.3.5:
+    dev: false
+    resolution:
+      integrity: sha512-foGF8u6MXGFF++1TZVC6icGXuMYPftKXt1FBT2vrfU9ZATNtZJ8duRC5d1lEfE8hyVe3jhelHGB91oB7I6qLsA==
+  /redis-parser/2.6.0:
+    dev: false
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-Uu0J2srBCPGmMcB+m2mUHnoZUEs=
+  /redis/2.8.0:
+    dependencies:
+      double-ended-queue: 2.1.0-0
+      redis-commands: 1.3.5
+      redis-parser: 2.6.0
+    dev: false
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha512-M1OkonEQwtRmZv4tEWF2VgpG0JWJ8Fv1PhlgT5+B+uNq2cA3Rt1Yt/ryoR+vQNOQcIEgdCdfH0jr3bDpihAw1A==
   /safe-buffer/5.1.1:
     dev: false
     resolution:
@@ -380,3 +405,4 @@ shrinkwrapVersion: 3
 specifiers:
   disconnect: ^1.2.1
   express: ^4.16.3
+  redis: ^2.8.0
