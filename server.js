@@ -1,22 +1,23 @@
-// server.js
-// where your node app starts
+// init express
+var express = require('express')
+var app = express()
 
-// init project
-var express = require('express');
-var app = express();
+// init discogs client
+var Discogs = require('disconnect').Client
+var db = new Discogs('ExplorerDiscogsApi/0.0.0').database()
 
-// we've started you off with Express, 
-// but feel free to use whatever libs or frameworks you'd like through `package.json`.
+// index route
+app.get('/', function (request, response) {
+  response.send({msg: 'discogs proxy api'})
+})
 
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static('public'));
+app.get('/releases/:id', async (req, res) => {
+  db.getRelease(req.params.id, function(err, data){
+    console.log(data)
+    res.send(data)
+  })
+})
 
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (request, response) {
-  response.sendFile(__dirname + '/views/index.html');
-});
-
-// listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-});
+  console.log('Your app is listening on port ' + listener.address().port)
+})

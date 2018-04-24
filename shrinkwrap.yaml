@@ -1,4 +1,5 @@
 dependencies:
+  disconnect: 1.2.1
   express: 4.16.3
 packages:
   /accepts/1.3.5:
@@ -81,6 +82,14 @@ packages:
     dev: false
     resolution:
       integrity: sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=
+  /disconnect/1.2.1:
+    dependencies:
+      oauth-1.0a: 2.2.4
+    dev: false
+    engines:
+      node: '>= 0.12.0'
+    resolution:
+      integrity: sha1-/nVTj2TTjoIaRrAb/e5enCPEus4=
   /ee-first/1.1.1:
     dev: false
     resolution:
@@ -235,6 +244,10 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
+  /oauth-1.0a/2.2.4:
+    dev: false
+    resolution:
+      integrity: sha512-qHqZLUIcd+mrOKYMFosi9lC0KW602BeLdJ660M3MNhT7WruzFSgJbFZE5sdN+nV55Xk/ls9k1FusaCiDItli1g==
   /on-finished/2.3.0:
     dependencies:
       ee-first: 1.1.1
@@ -365,4 +378,5 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 4
 shrinkwrapVersion: 3
 specifiers:
+  disconnect: ^1.2.1
   express: ^4.16.3
