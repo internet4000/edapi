@@ -97,7 +97,7 @@ app.get('/database/search', cache, async (req, res) => {
 })
 
 app.get('/labels/:id/releases', cache, async (req, res) => {
-  const data = await db.labelReleases(req.params.id)
+  const data = await db.getLabelReleases(req.params.id)
   res.send(data)
 })
 
