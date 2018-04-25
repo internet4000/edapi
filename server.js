@@ -42,7 +42,7 @@ async function cache(req, res, next) {
   // if cache exists, return it
 	let cache = await redis.get(key)
   if (cache) {
-    console.log('using cache')
+    console.log(`using cache for "${key}"`)
     res.send(cache)
     return
   }
@@ -66,7 +66,6 @@ const readFile = (path) => {
   return file.split(/\r?\n/)
 }
 
-// The actual API routes
 app.get('/', (req, res) => {
   res.send({
     'test release': `https://${req.headers.host}/releases/6980600`,
@@ -93,6 +92,11 @@ app.get('/masters/:id', cache, async (req, res) => {
 
 app.get('/artists/:id', cache, async (req, res) => {
   const data = await db.getArtist(req.params.id)
+  res.send(data)
+})
+
+app.get('/database/search', cache, async (req, res) => {
+  const data = await db.search(req.params.search)
   res.send(data)
 })
 
