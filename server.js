@@ -26,6 +26,11 @@ const oskar = async (req, res, next) => {
   
   console.log('middleware before', req.originalUrl)
   
+  let cache = await redis.get(key)
+  if (cache) {
+    console.log('we have a cache')
+  }
+  
   await next()
   
   console.log('middleware after?', res.locals)
@@ -37,13 +42,16 @@ const oskar = async (req, res, next) => {
 }
 
 app.get('/', function(request, response) {
-  response.send({ msg: 'discogs proxy api' })
+  response.send({ msg: 'discogs proxy api', test: })
 })
 
-app.get('/releases/:id', (req, res) => {
-	db.getRelease(req.params.id, (err, data) => {
-    res.send(data)
-  })
+app.get('/releases/:id', oskar, async (req, res, next) => {
+  console.log('before')
+	let data = await db.getRelease(req.params.id)
+  res.locals.cache = data
+  res.send(data)
+  console.log('after')
+  res.end()
 })
 
 app.get('/cached-releases/:id', async (req, res) => {
