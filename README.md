@@ -1,4 +1,4 @@
-Proxy API for Discogs
+# Proxy API for Discogs
 
 - Caching
 

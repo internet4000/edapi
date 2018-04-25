@@ -16,37 +16,28 @@ if (REDIS_URL === undefined) {
 	console.error('Please set the REDIS_URL environment variable')
 	process.exit(1)
 }
-
 const redis = new Redis(REDIS_URL, {
 	tls: { servername: new URL(REDIS_URL).hostname }
 })
-
-const cacheMiddleware = async (req, res, next) => {
-  const id = req.params.id
-  const key = req.originalUrl
-  let cache = await redis.get(key)
-	if (cache) {
-		console.log('found cache')
-    req.send = JSON.parse(cache)
-	}
-  next()
-}
 
 app.get('/', function(request, response) {
 	response.send({ msg: 'discogs proxy api' })
 })
 
-app.get('/releases/:id', async (req, res) => {
+app.get('/releases/:id', (req, res) => {
 	const id = req.params.id
 	db.getRelease(id, (err, data) => {
     res.send(data)
   })
 })
 
-// app.use(cacheMiddleware)
+app.get('/cached-releases/:id', async (req, res) => {
+	const id = req.params.id
+  const key = req.originalUrl
 
-app.get('/cached-releases/:id', cacheMiddleware, async (req, res) => {
 	console.log({ id, key })
+
+	let cache = await redis.get(key)
 	if (cache) {
 		console.log('found cache')
 		res.send(JSON.parse(cache))
@@ -59,7 +50,6 @@ app.get('/cached-releases/:id', cacheMiddleware, async (req, res) => {
 		})
 	}
 })
-
 
 var listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
