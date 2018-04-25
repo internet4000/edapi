@@ -17,7 +17,7 @@ const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
 const Redis = require('ioredis')
 const { URL } = require('url')
 const { REDIS_URL } = process.env
-const CACHE_SECONDS = 3600
+const CACHE_SECONDS = 86400 // 24 hours
 
 if (REDIS_URL === undefined) {
 	console.error('Please set the REDIS_URL environment variable')
