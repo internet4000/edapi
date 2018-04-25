@@ -44,7 +44,7 @@ async function cache(req, res, next) {
   // otherwise overwrite "res.send" so we can save cache before sending the response
   res.sendResponse = res.send
   res.send = (body) => {
-    console.log('no cache found. creating cache')
+    console.log(`no cache found for "${key}". creating cache`)
     redis.set(key, body, 'EX', CACHE_SECONDS)
     res.sendResponse(body)
   }
