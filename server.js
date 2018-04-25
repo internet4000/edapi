@@ -6,14 +6,12 @@ const app = express()
 // Allow cross-origin requests
 app.use(cors())
 
-
 // Start Discogs API client
 const Discogs = require('disconnect').Client
 const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
 	consumerKey: process.env.DISCOGS_KEY, 
 	consumerSecret: process.env.DISCOGS_SECRET
 }).database()
-
 
 // Start cache with redis
 const Redis = require('ioredis')
@@ -26,10 +24,12 @@ if (REDIS_URL === undefined) {
 	process.exit(1)
 }
 
+// Connect with SSL
 const redis = new Redis(REDIS_URL, {
 	tls: { servername: new URL(REDIS_URL).hostname }
 })
 
+// Listen to events from redis
 redis.on('error', err => console.log('redis err', err))
 redis.on('connect', () => console.log('connected to redis'))
 redis.on('end', () => console.log('disconnected from redis'))
@@ -39,7 +39,7 @@ redis.on('end', () => console.log('disconnected from redis'))
 async function cache(req, res, next) {
   const key = req.originalUrl
   
-  // if cache exists, return it
+  // If cache exists return it
 	let cache = await redis.get(key)
   if (cache) {
     console.log(`using cache for "${key}"`)
@@ -47,7 +47,7 @@ async function cache(req, res, next) {
     return
   }
   
-  // otherwise overwrite "res.send" so we can save cache before sending the response
+  // …otherwise overwrite "res.send" to allow saving cache before sending response
   res.sendResponse = res.send
   res.send = (body) => {
     console.log(`no cache found for "${key}". creating cache`)
@@ -59,7 +59,7 @@ async function cache(req, res, next) {
 }
 
 
-// Helper to put the readme into the api. not really needed
+// Utility to render the readme as help. not really needed
 var fs = require('fs')
 const readFile = (path) => {
   var file = fs.readFileSync(__dirname + '/' + path, 'utf8')
