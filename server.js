@@ -27,31 +27,59 @@ redis.on('end', () => console.log('disconnected from redis'))
 
 const CACHE_SECONDS = 60
 
+function before(req, res, next) {
+  res.locals.key = req.originalUrl
+  console.log('before middleware', res.locals)
+  next()
+}
+
+function after(req, res, next) {
+  console.log('after middleware', res.locals)
+  const {key, cache} = res.locals
+  if (key && cache) {
+    console.log('after middleware saving cache')
+    redis.set(key, JSON.stringify(cache), 'EX', CACHE_SECONDS)
+  }
+  next()
+}
+
+app.use(before)
+
+
 // express routes
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
+  console.log('route', res.locals)
+  res.locals.oskar = 123
   res.send({
     msg: 'discogs proxy api',
     test: 'https://edapi.glitch.me/releases/6980600'
   })
+  next()
 })
 
-app.get('/releases/:id', async (req, res) => {
+app.get('/releases/:id', async (req, res, next) => {
   const key = req.originalUrl
+  console.log('route', res.locals)
 
   // return from cache if possible
 	let cache = await redis.get(key)
 	if (cache) {
     console.log('using cache')
-		return res.send(JSON.parse(cache))
+		res.send(JSON.parse(cache))
+    next()
+    return
 	}
   
   // otherwise fetch and store in cache
   console.log('no cache')
   db.getRelease(req.params.id, (err, data) => {
-    redis.set(key, JSON.stringify(data), 'EX', CACHE_SECONDS)
+    res.locals.cache = data
     res.send(data)
+    next()
   })
 })
+
+app.use(after)
 
 const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
