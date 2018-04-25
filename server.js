@@ -24,42 +24,47 @@ redis.on('error', err => console.log('redis err', err))
 redis.on('connect', () => console.log('connected to redis'))
 redis.on('end', () => console.log('disconnected from redis'))
 
+app.use(function(req, res, next) {
+    console.log("before");
+    res.on("finish", function() {
+        console.log("onFinish");
+    });
+    next();
+});
+
 const oskar = (req, res, next) => {
   const id = req.params.id
   const key = req.originalUrl
-  
-  console.log('middleware before', req.originalUrl)
-  
-  redis.get(key)
-    .then((result) => {
-      if (result) {
-        console.log('found cache')
-        res.send(JSON.parse(result))
-      } else {
-        console.log('no cache?')
-        next()
-      }
-    })
-    .catch(err => {
-      console.log('no cache')
-      next(err)
-    })
+  console.log({id, key})
+//   console.log('middleware before', req.originalUrl)
+//   redis.get(key)
+//     .then((result) => {
+//       if (result) {
+//         console.log('found cache')
+//         res.send(JSON.parse(result))
+//       } else {
+//         console.log('no cache?')
+//         next()
+//       }
+//     })
+//     .catch(err => {
+//       console.log('no cache')
+//       next(err)
+//     })
 //   if (res.locals.cache) {
 // 		// redis.set(key, JSON.stringify(res.locals.cache), 'EX', CACHE_SECONDS)
 //   }
 }
 
-app.get('/', function(request, response) {
+app.get('/', function(request, response, next) {
   response.send({ msg: 'discogs proxy api', test: 'https://edapi.glitch.me/releases/6980600' })
+  next()
 })
 
-app.get('/releases/:id', oskar, async (req, res, next) => {
-  console.log('before')
-	let release = await db.getRelease(req.params.id)//.then(release => {
-    console.log('after')
-    res.send(release)
-    res.end()
-  // })//
+app.get('/releases/:id', (req, res, next) => {
+	db.getRelease(req.params.id)
+    .then(data => {res.send(data); next()})
+    .then(next)
 })
 
 app.get('/cached-releases/:id', async (req, res) => {
@@ -81,6 +86,11 @@ app.get('/cached-releases/:id', async (req, res) => {
 		})
 	}
 })
+
+app.use(function(req, res, next) {
+  console.log("after")
+  next()
+});
 
 const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
