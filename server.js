@@ -30,22 +30,23 @@ const oskar = (req, res, next) => {
   
   console.log('middleware before', req.originalUrl)
   
-  redis.get(key).then(result => {
-    console.log('we have a cache')
-    res.send(result)
-  }).catch(err => {
-    console.log('no cache')
-    next(err)
-  })
-  
-  console.log('middleware after?', res.locals)
-  
-  if (res.locals.cache) {
-    console.log('setting cache', key)
-		// redis.set(key, JSON.stringify(res.locals.cache), 'EX', CACHE_SECONDS)
-  }
-  
-  next()
+  redis.get(key)
+    .then((result) => {
+      if (result) {
+        console.log('found cache')
+        res.send(JSON.parse(result))
+      } else {
+        console.log('no cache?')
+        next()
+      }
+    })
+    .catch(err => {
+      console.log('no cache')
+      next(err)
+    })
+//   if (res.locals.cache) {
+// 		// redis.set(key, JSON.stringify(res.locals.cache), 'EX', CACHE_SECONDS)
+//   }
 }
 
 app.get('/', function(request, response) {
@@ -54,11 +55,11 @@ app.get('/', function(request, response) {
 
 app.get('/releases/:id', oskar, async (req, res, next) => {
   console.log('before')
-	let data = await db.getRelease(req.params.id)
-  res.locals.cache = 'it works'
-  res.send(data)
-  console.log('after')
-  res.end('whaaat')
+	let release = await db.getRelease(req.params.id)//.then(release => {
+    console.log('after')
+    res.send(release)
+    res.end()
+  // })//
 })
 
 app.get('/cached-releases/:id', async (req, res) => {
