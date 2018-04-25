@@ -2,9 +2,14 @@
 const express = require('express')
 const app = express()
 
+
 // Start Discogs API client
 const Discogs = require('disconnect').Client
-const db = new Discogs('ExplorerDiscogsApi/0.0.0').database()
+const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
+	consumerKey: process.env.DISCOGS_KEY, 
+	consumerSecret: process.env.DISCOGS_SECRET
+}).database()
+
 
 // Start cache with redis
 const Redis = require('ioredis')
@@ -25,31 +30,35 @@ redis.on('error', err => console.log('redis err', err))
 redis.on('connect', () => console.log('connected to redis'))
 redis.on('end', () => console.log('disconnected from redis'))
 
-// Returns cache - if it exist - otherwise continues to run the route
-async function restoreCache(req, res, next) {
+
+
+// Express middleware.
+
+// Returns cache if possible. Otherwise skips to next.
+async function loadCache(req, res, next) {
   res.locals.key = req.originalUrl
   
 	let cache = await redis.get(res.locals.key)
   
   if (cache) {
-    console.log('found cache')
+    console.log('using cache')
     res.send(cache)
   } else {
     next()
   }
 }
 
-// Saves cache - if a key + cache is set.
+// Saves cache (requires `res.locals.key` and `res.locals.cache` (the data to store)
 function saveCache(req, res, next) {
   const {key, cache} = res.locals
   if (key && cache) {
-    console.log('after middleware: saving cache')
+    console.log('saving cache')
     redis.set(key, JSON.stringify(cache), 'EX', CACHE_SECONDS)
   }
   next()
 }
 
-app.use(restoreCache)
+app.use(loadCache)
 
 // express routes
 app.get('/', (req, res, next) => {
@@ -76,7 +85,7 @@ app.get('/labels/:id', async (req, res, next) => {
 })
 
 app.get('/masters/:id', async (req, res, next) => {
-  const data = await db.getLabel(req.params.id)
+  const data = await db.getMaster(req.params.id)
   res.locals.cache = data // store data so we can access in 'after' middleware
   res.send(data)
   next()
