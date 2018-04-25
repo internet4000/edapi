@@ -2,29 +2,67 @@
 const express = require('express')
 const app = express()
 
-
 // Start Discogs API client
 const Discogs = require('disconnect').Client
 const db = new Discogs('ExplorerDiscogsApi/0.0.0').database()
 
-// Start redis cache + custom before/after middleware.
-const {redis, before, after} = require('./redis-cache')
+// Start cache with redis
+const Redis = require('ioredis')
+const { URL } = require('url')
+const { REDIS_URL } = process.env
+const CACHE_SECONDS = 600
 
-app.use(before)
+if (REDIS_URL === undefined) {
+	console.error('Please set the REDIS_URL environment variable')
+	process.exit(1)
+}
+
+const redis = new Redis(REDIS_URL, {
+	tls: { servername: new URL(REDIS_URL).hostname }
+})
+
+redis.on('error', err => console.log('redis err', err))
+redis.on('connect', () => console.log('connected to redis'))
+redis.on('end', () => console.log('disconnected from redis'))
+
+// Returns cache - if it exist - otherwise continues to run the route
+async function restoreCache(req, res, next) {
+  res.locals.key = req.originalUrl
+  
+	let cache = await redis.get(res.locals.key)
+  
+  if (cache) {
+    console.log('found cache')
+    res.send(cache)
+  } else {
+    next()
+  }
+}
+
+// Saves cache - if a key + cache is set.
+function saveCache(req, res, next) {
+  const {key, cache} = res.locals
+  if (key && cache) {
+    console.log('after middleware: saving cache')
+    redis.set(key, JSON.stringify(cache), 'EX', CACHE_SECONDS)
+  }
+  next()
+}
+
+app.use(restoreCache)
 
 // express routes
 app.get('/', (req, res, next) => {
   res.send({
     msg: 'Proxy API for Discogs',
-    test: `https://${req.headers.host}/releases/6980600`,
-    help: 'Call your internet provider'
+    'test release': `https://${req.headers.host}/releases/6980600`,
+    'test label': `https://${req.headers.host}/labels/840950`,
+    'test master': `https://${req.headers.host}/masters/74177`
   })
 })
 
 app.get('/releases/:id', async (req, res, next) => {
-  console.log('route', res.locals)
   const data = await db.getRelease(req.params.id)
-  console.log('fetched data')
   res.locals.cache = data
   res.send(data)
   next() // call 'after' middleware
@@ -44,7 +82,7 @@ app.get('/masters/:id', async (req, res, next) => {
   next()
 })
 
-app.use(after)
+app.use(saveCache)
 
 const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)

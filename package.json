@@ -1,7 +1,4 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
   "name": "explorer-discogs-api",
   "version": "0.0.1",
   "description": "A proxy API to cache requests to Discogs",
@@ -18,7 +15,7 @@
     "node": "8.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
+    "url": "https://glitch.com/edit/#!/edapi"
   },
   "license": "MIT",
   "keywords": [
