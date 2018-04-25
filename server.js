@@ -63,12 +63,18 @@ app.get('/', (req, res, next) => {
 
 app.get('/releases/:id', async (req, res, next) => {
   console.log('route', res.locals)
-  db.getRelease(req.params.id, (err, data) => {
-    console.log('fetched data')
-    res.locals.cache = data
-    res.send(data)
-    next() // call 'after' middleware
-  })
+  const data = await db.getRelease(req.params.id)
+  console.log('fetched data')
+  res.locals.cache = data
+  res.send(data)
+  next() // call 'after' middleware
+})
+
+app.get('/labels/:id', async (req, res, next) => {
+  const data = await db.getLabel(req.params.id)
+  res.locals.cache = data // store data so we can access in 'after' middleware
+  res.send(data)
+  next()
 })
 
 app.use(after)
