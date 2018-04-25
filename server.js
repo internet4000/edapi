@@ -6,6 +6,7 @@ const app = express()
 // Allow cross-origin requests
 app.use(cors())
 
+
 // Start Discogs API client
 const Discogs = require('disconnect').Client
 const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
@@ -13,11 +14,12 @@ const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
 	consumerSecret: process.env.DISCOGS_SECRET
 }).database()
 
+
 // Start cache with redis
 const Redis = require('ioredis')
 const { URL } = require('url')
 const { REDIS_URL } = process.env
-const CACHE_SECONDS = 10
+const CACHE_SECONDS = 3600
 
 if (REDIS_URL === undefined) {
 	console.error('Please set the REDIS_URL environment variable')
@@ -56,13 +58,15 @@ async function cache(req, res, next) {
   next()
 }
 
+
+// Helper to put the readme into the api. not really needed
 var fs = require('fs')
 const readFile = (path) => {
   var file = fs.readFileSync(__dirname + '/' + path, 'utf8')
   return file.split(/\r?\n/)
 }
 
-// express routes
+// The actual API routes
 app.get('/', (req, res) => {
   res.send({
     'test release': `https://${req.headers.host}/releases/6980600`,
