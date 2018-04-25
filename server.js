@@ -96,8 +96,8 @@ app.get('/artists/:id', cache, async (req, res) => {
 })
 
 app.get('/database/search', cache, async (req, res) => {
-  const data = await db.search(req.params.search, req.query)
-  res.json(data)
+  const data = await db.search(req.params.search)
+  res.send(data)
 })
 
 const listener = app.listen(process.env.PORT, function() {
