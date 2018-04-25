@@ -2,15 +2,17 @@
 const express = require('express')
 const app = express()
 
+
 // Start Discogs API client
 const Discogs = require('disconnect').Client
 const db = new Discogs('ExplorerDiscogsApi/0.0.0').database()
+
 
 // Start cache with redis
 const Redis = require('ioredis')
 const { URL } = require('url')
 const { REDIS_URL } = process.env
-const CACHE_SECONDS = 60
+const CACHE_SECONDS = 600
 
 if (REDIS_URL === undefined) {
 	console.error('Please set the REDIS_URL environment variable')
@@ -25,7 +27,8 @@ redis.on('error', err => console.log('redis err', err))
 redis.on('connect', () => console.log('connected to redis'))
 redis.on('end', () => console.log('disconnected from redis'))
 
-// Runs before a route. If cache exists the route is skipped.
+
+// Returns cache if it exist, otherwise continues to run the route
 async function before(req, res, next) {
   res.locals.key = req.originalUrl
   
@@ -71,6 +74,13 @@ app.get('/releases/:id', async (req, res, next) => {
 })
 
 app.get('/labels/:id', async (req, res, next) => {
+  const data = await db.getLabel(req.params.id)
+  res.locals.cache = data // store data so we can access in 'after' middleware
+  res.send(data)
+  next()
+})
+
+app.get('/masters/:id', async (req, res, next) => {
   const data = await db.getLabel(req.params.id)
   res.locals.cache = data // store data so we can access in 'after' middleware
   res.send(data)
