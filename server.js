@@ -20,38 +20,45 @@ const redis = new Redis(REDIS_URL, {
 	tls: { servername: new URL(REDIS_URL).hostname }
 })
 
-const oskar = async (req, res, next) => {
+redis.on('error', err => console.log('redis err', err))
+redis.on('connect', () => console.log('connected to redis'))
+redis.on('end', () => console.log('disconnected from redis'))
+
+const oskar = (req, res, next) => {
   const id = req.params.id
   const key = req.originalUrl
   
   console.log('middleware before', req.originalUrl)
   
-  let cache = await redis.get(key)
-  if (cache) {
+  redis.get(key).then(result => {
     console.log('we have a cache')
-  }
-  
-  await next()
+    res.send(result)
+  }).catch(err => {
+    console.log('no cache')
+    next(err)
+  })
   
   console.log('middleware after?', res.locals)
   
   if (res.locals.cache) {
     console.log('setting cache', key)
-		redis.set(key, JSON.stringify(res.locals.cache), 'EX', CACHE_SECONDS)
+		// redis.set(key, JSON.stringify(res.locals.cache), 'EX', CACHE_SECONDS)
   }
+  
+  next()
 }
 
 app.get('/', function(request, response) {
-  response.send({ msg: 'discogs proxy api', test: })
+  response.send({ msg: 'discogs proxy api', test: 'https://edapi.glitch.me/releases/6980600' })
 })
 
 app.get('/releases/:id', oskar, async (req, res, next) => {
   console.log('before')
 	let data = await db.getRelease(req.params.id)
-  res.locals.cache = data
+  res.locals.cache = 'it works'
   res.send(data)
   console.log('after')
-  res.end()
+  res.end('whaaat')
 })
 
 app.get('/cached-releases/:id', async (req, res) => {
