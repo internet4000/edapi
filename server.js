@@ -20,13 +20,28 @@ const redis = new Redis(REDIS_URL, {
 	tls: { servername: new URL(REDIS_URL).hostname }
 })
 
+const oskar = async (req, res, next) => {
+  const id = req.params.id
+  const key = req.originalUrl
+  
+  console.log('middleware before', req.originalUrl)
+  
+  await next()
+  
+  console.log('middleware after?', res.locals)
+  
+  if (res.locals.cache) {
+    console.log('setting cache', key)
+		redis.set(key, JSON.stringify(res.locals.cache), 'EX', CACHE_SECONDS)
+  }
+}
+
 app.get('/', function(request, response) {
-	response.send({ msg: 'discogs proxy api' })
+  response.send({ msg: 'discogs proxy api' })
 })
 
 app.get('/releases/:id', (req, res) => {
-	const id = req.params.id
-	db.getRelease(id, (err, data) => {
+	db.getRelease(req.params.id, (err, data) => {
     res.send(data)
   })
 })
@@ -51,6 +66,6 @@ app.get('/cached-releases/:id', async (req, res) => {
 	}
 })
 
-var listener = app.listen(process.env.PORT, function() {
+const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
 })
