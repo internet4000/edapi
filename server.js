@@ -96,6 +96,11 @@ app.get('/database/search', cache, async (req, res) => {
   res.send(data)
 })
 
+app.get('/labels/:id/releases', cache, async (req, res) => {
+  const data = await db.labelReleases(req.params.id)
+  res.send(data)
+})
+
 const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
 })
