@@ -58,20 +58,16 @@ async function cache(req, res, next) {
   next()
 }
 
-
-// Utility to render the readme as help. not really needed
-var fs = require('fs')
-const readFile = (path) => {
-  var file = fs.readFileSync(__dirname + '/' + path, 'utf8')
-  return file.split(/\r?\n/)
-}
-
 app.get('/', (req, res) => {
   res.send({
     'test release': `https://${req.headers.host}/releases/6980600`,
     'test label': `https://${req.headers.host}/labels/840950`,
     'test master': `https://${req.headers.host}/masters/74177`,
-    help: readFile('README.md')
+    // AHHAHAA you are here
+    // not me, my cursor
+    // me cursor
+    'test search': `https://${req.headers.host}/database/search?page=10&per_page=5&q=nirvana`,
+    help: 'https://glitch.com/edit/#!/edapi'
   })
 })
 
