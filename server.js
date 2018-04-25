@@ -1,6 +1,10 @@
 // Start express.js
 const express = require('express')
+const cors = require('cors')
 const app = express()
+
+// Allow cross-origin requests
+app.use(cors())
 
 // Start Discogs API client
 const Discogs = require('disconnect').Client
@@ -54,12 +58,13 @@ async function cache(req, res, next) {
 
 // express routes
 app.get('/', (req, res) => {
-  res.send({
-    msg: 'Proxy API for Discogs',
-    'test release': `https://${req.headers.host}/releases/6980600`,
-    'test label': `https://${req.headers.host}/labels/840950`,
-    'test master': `https://${req.headers.host}/masters/74177`
-  })
+  res.send({help: require('./README.md')})
+  // res.send({
+  //   msg: 'Proxy API for Discogs',
+  //   'test release': `https://${req.headers.host}/releases/6980600`,
+  //   'test label': `https://${req.headers.host}/labels/840950`,
+  //   'test master': `https://${req.headers.host}/masters/74177`
+  // })
 })
 
 app.get('/releases/:id', cache, async (req, res) => {
@@ -74,6 +79,11 @@ app.get('/labels/:id', cache, async (req, res) => {
 
 app.get('/masters/:id', cache, async (req, res) => {
   const data = await db.getMaster(req.params.id)
+  res.send(data)
+})
+
+app.get('/artists/:id', cache, async (req, res) => {
+  const data = await db.getArtist(req.params.id)
   res.send(data)
 })
 
