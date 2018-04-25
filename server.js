@@ -56,15 +56,20 @@ async function cache(req, res, next) {
   next()
 }
 
+var fs = require('fs')
+const readFile = (path) => {
+  var file = fs.readFileSync(__dirname + '/' + path, 'utf8')
+  return file.split(/\r?\n/)
+}
+
 // express routes
 app.get('/', (req, res) => {
-  res.send({help: require('./README.md')})
-  // res.send({
-  //   msg: 'Proxy API for Discogs',
-  //   'test release': `https://${req.headers.host}/releases/6980600`,
-  //   'test label': `https://${req.headers.host}/labels/840950`,
-  //   'test master': `https://${req.headers.host}/masters/74177`
-  // })
+  res.send({
+    'test release': `https://${req.headers.host}/releases/6980600`,
+    'test label': `https://${req.headers.host}/labels/840950`,
+    'test master': `https://${req.headers.host}/masters/74177`,
+    help: readFile('README.md')
+  })
 })
 
 app.get('/releases/:id', cache, async (req, res) => {

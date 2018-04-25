@@ -12,10 +12,6 @@ This a node.js proxy api for Discogs. It…
 
 ## How does it work?
 
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env` (nobody can see this but you and people you invite)
-
 1. [Redis database on IBM Cloud](https://www.ibm.com/blogs/bluemix/2018/02/ibm-cloud-compose-redis-available-tls-encryption/)
 2. Express.js API
 3. `disconnect` module for speaking with Discogs
@@ -24,7 +20,7 @@ This a node.js proxy api for Discogs. It…
 
 ## Does it work?
 
-How to test cache speed in the terminal
+How to test cache response speed in the terminal
 
 ```shell
 for x in 1 2 3 4 5 6 7 8 9 10
