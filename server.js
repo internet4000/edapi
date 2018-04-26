@@ -43,7 +43,7 @@ async function cache(req, res, next) {
 	let cache = await redis.get(key)
   if (cache) {
     console.log(`using cache for "${key}"`)
-    res.send(cache)
+    res.send(JSON.parse(cache))
     return
   }
   
