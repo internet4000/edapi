@@ -49,8 +49,8 @@ async function cache(req, res, next) {
   }
   
   // …otherwise overwrite "res.send" to allow saving cache before sending response
-  res.sendResponse = res.send
-  res.send = (body) => {
+  res.sendResponse = res.json
+  res.json = (body) => {
     console.log(`no cache found for "${key}". creating cache`)
     redis.set(key, body, 'EX', CACHE_SECONDS)
     res.sendResponse(body)
@@ -59,8 +59,13 @@ async function cache(req, res, next) {
   next()
 }
 
+app.get('/oskar', (req, res) => {
+  res.json(req.query)
+  // res.json({a: 1, b: 2})
+})
+
 app.get('/', (req, res) => {
-  res.send({
+  res.json({
     'test release': `https://${req.headers.host}/releases/6980600`,
     'test label': `https://${req.headers.host}/labels/840950`,
     'test master': `https://${req.headers.host}/masters/74177`,
@@ -74,37 +79,37 @@ app.get('/', (req, res) => {
 
 app.get('/releases/:id', cache, async (req, res) => {
   const data = await db.getRelease(req.params.id)
-  res.send(data)
+  res.json(data)
 })
 
 app.get('/labels/:id', cache, async (req, res) => {
   const data = await db.getLabel(req.params.id)
-  res.send(data)
+  res.json(data)
 })
 
 app.get('/masters/:id', cache, async (req, res) => {
   const data = await db.getMaster(req.params.id)
-  res.send(data)
+  res.json(data)
 })
 
 app.get('/artists/:id', cache, async (req, res) => {
   const data = await db.getArtist(req.params.id)
-  res.send(data)
+  res.json(data)
 })
 
 app.get('/artists/:id/releases', cache, async (req, res) => {
   const data = await db.getArtistReleases(req.params.id)
-  res.send(data)
+  res.json(data)
 })
 
 app.get('/database/search', cache, async (req, res) => {
   const data = await db.search(req.params.search)
-  res.send(data)
+  res.json(data)
 })
 
 app.get('/labels/:id/releases', cache, async (req, res) => {
   const data = await db.getLabelReleases(req.params.id)
-  res.send(data)
+  res.json(data)
 })
 
 const listener = app.listen(process.env.PORT, function() {
