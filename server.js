@@ -25,9 +25,10 @@ if (REDIS_URL === undefined) {
 }
 
 // Connect with SSL
-const redis = new Redis(REDIS_URL, {
-	tls: { servername: new URL(REDIS_URL).hostname }
-})
+// const redis = new Redis(REDIS_URL, {
+// 	tls: { servername: new URL(REDIS_URL).hostname }
+// })
+const redis = new Redis(REDIS_URL)
 
 // Listen to events from redis
 redis.on('error', err => console.log('redis err', err))
@@ -43,8 +44,7 @@ async function cache(req, res, next) {
 	let cache = await redis.get(key)
   if (cache) {
     console.log(`using cache for "${key}"`, typeof cache)
-    // res.json(JSON.parse(cache))
-    res.json(cache)
+    res.json(JSON.parse(cache))
     return
   }
   
