@@ -53,15 +53,17 @@ async function cache(req, res, next) {
   res.json = (body) => {
     console.log(`no cache found for "${key}". creating cache`)
     redis.set(key, body, 'EX', CACHE_SECONDS)
+    // redis.hset(
     res.sendResponse(body)
   }
   
   next()
 }
 
-app.get('/oskar', (req, res) => {
-  res.json(req.query)
-  // res.json({a: 1, b: 2})
+app.get('/oskar/:id', (req, res) => {
+  let path = req.route.path.substr(1)
+  console.log(req.originalUrl, req.params.id)
+  res.json({a: 1, b: 2})
 })
 
 app.get('/', (req, res) => {
