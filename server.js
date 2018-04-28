@@ -42,8 +42,9 @@ async function cache(req, res, next) {
   // If cache exists return it
 	let cache = await redis.get(key)
   if (cache) {
-    console.log(`using cache for "${key}"`)
-    res.send(cache)
+    console.log(`using cache for "${key}"`, typeof cache)
+    // res.json(JSON.parse(cache))
+    res.json(cache)
     return
   }
   
