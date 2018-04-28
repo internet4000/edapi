@@ -92,6 +92,11 @@ app.get('/artists/:id', cache, async (req, res) => {
   res.send(data)
 })
 
+app.get('/artists/:id/releases', cache, async (req, res) => {
+  const data = await db.getArtistReleases(req.params.id)
+  res.send(data)
+})
+
 app.get('/database/search', cache, async (req, res) => {
   const data = await db.search(req.params.search)
   res.send(data)
