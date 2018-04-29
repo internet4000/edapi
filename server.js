@@ -40,19 +40,21 @@ redis.on('end', () => console.log('disconnected from redis'))
 async function cache(req, res, next) {
   const key = req.originalUrl
   
-  // If cache exists return it
-	// let cache = await redis.get(key)
-	// if (cache && key !== "/releases/1042127") {
-	// console.log(`using cache for "${key}"`, typeof cache)
-	// res.json(cache)
-	// return
-	// }
-  
-  // …otherwise overwrite "res.send" to allow saving cache before sending response
   res.sendResponse = res.json
-  res.send = (body) => {
-    console.log(`no cache found for "${key}". creating cache`, body)
-    redis.set(key, body, 'EX', CACHE_SECONDS)
+  
+  // If cache exists return it
+	let cache = await redis.get(key)
+	if (cache) {
+	  console.log(`using cache for "${key}"`, typeof cache)
+	  res.sendResponse(cache)
+	  return
+	}
+  
+  // …otherwise overwrite "res.json" to allow saving cache before sending response  
+  res.sendResponse = res.json
+  res.json = (body) => {
+    console.log(`no cache found for "${key}". creating cache`, body.status)
+    redis.set(key, JSON.stringify(body), 'EX', CACHE_SECONDS)
     res.sendResponse(body)
   }
   
