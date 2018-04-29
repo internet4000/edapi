@@ -56,6 +56,7 @@ async function cache(req, res, next) {
     res.sendResponse(body)
   }
   
+  // continue route-specific handler
   next()
 }
 
