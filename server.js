@@ -40,21 +40,19 @@ redis.on('end', () => console.log('disconnected from redis'))
 async function cache(req, res, next) {
   const key = req.originalUrl
   
-  res.sendResponse = res.json
-  
   // If cache exists return it
 	let cache = await redis.get(key)
-	if (cache) {
-	  console.log(`using cache for "${key}"`, typeof cache)
-	  res.sendResponse(cache)
-	  return
-	}
+  if (cache) {
+    console.log(`using cache for "${key}"`, typeof cache)
+    res.json(JSON.parse(cache))
+    return
+  }
   
-  // …otherwise overwrite "res.json" to allow saving cache before sending response  
-  res.sendResponse = res.json
-  res.json = (body) => {
-    console.log(`no cache found for "${key}". creating cache`, body.status)
-    redis.set(key, JSON.stringify(body), 'EX', CACHE_SECONDS)
+  // …otherwise overwrite "res.send" to allow saving cache before sending response
+  res.sendResponse = res.send
+  res.send = (body) => {
+    console.log(`no cache found for "${key}". creating cache`)
+    redis.set(key, body, 'EX', CACHE_SECONDS)
     res.sendResponse(body)
   }
   
@@ -62,10 +60,13 @@ async function cache(req, res, next) {
 }
 
 app.get('/', (req, res) => {
-  res.json({
+  res.send({
     'test release': `https://${req.headers.host}/releases/6980600`,
     'test label': `https://${req.headers.host}/labels/840950`,
     'test master': `https://${req.headers.host}/masters/74177`,
+    // AHHAHAA you are here
+    // not me, my cursor
+    // me cursor
     'test search': `https://${req.headers.host}/database/search?page=10&per_page=5&q=nirvana`,
     help: 'https://glitch.com/edit/#!/edapi'
   })
@@ -73,37 +74,32 @@ app.get('/', (req, res) => {
 
 app.get('/releases/:id', cache, async (req, res) => {
   const data = await db.getRelease(req.params.id)
-  res.json(data)
+  res.send(data)
 })
 
 app.get('/labels/:id', cache, async (req, res) => {
   const data = await db.getLabel(req.params.id)
-  res.json(data)
+  res.send(data)
 })
 
 app.get('/masters/:id', cache, async (req, res) => {
   const data = await db.getMaster(req.params.id)
-  res.json(data)
+  res.send(data)
 })
 
 app.get('/artists/:id', cache, async (req, res) => {
   const data = await db.getArtist(req.params.id)
-  res.json(data)
-})
-
-app.get('/artists/:id/releases', cache, async (req, res) => {
-  const data = await db.getArtistReleases(req.params.id)
-  res.json(data)
+  res.send(data)
 })
 
 app.get('/database/search', cache, async (req, res) => {
   const data = await db.search(req.params.search)
-  res.json(data)
+  res.send(data)
 })
 
 app.get('/labels/:id/releases', cache, async (req, res) => {
   const data = await db.getLabelReleases(req.params.id)
-  res.json(data)
+  res.send(data)
 })
 
 const listener = app.listen(process.env.PORT, function() {
