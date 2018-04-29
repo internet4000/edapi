@@ -41,17 +41,17 @@ async function cache(req, res, next) {
   const key = req.originalUrl
   
   // If cache exists return it
-	let cache = await redis.get(key)
-  if (cache) {
-    console.log(`using cache for "${key}"`, typeof cache)
-    res.json(JSON.parse(cache))
-    return
-  }
+	// let cache = await redis.get(key)
+	// if (cache && key !== "/releases/1042127") {
+	// console.log(`using cache for "${key}"`, typeof cache)
+	// res.json(cache)
+	// return
+	// }
   
   // …otherwise overwrite "res.send" to allow saving cache before sending response
-  res.sendResponse = res.send
+  res.sendResponse = res.json
   res.send = (body) => {
-    console.log(`no cache found for "${key}". creating cache`)
+    console.log(`no cache found for "${key}". creating cache`, body)
     redis.set(key, body, 'EX', CACHE_SECONDS)
     res.sendResponse(body)
   }
@@ -59,20 +59,11 @@ async function cache(req, res, next) {
   next()
 }
 
-app.get('/oskar/:id', (req, res) => {
-  let path = req.route.path.substr(1)
-  console.log(req.query, req.originalUrl, req.params.id)
-  res.json({a: 1, b: 2})
-})
-
 app.get('/', (req, res) => {
   res.json({
     'test release': `https://${req.headers.host}/releases/6980600`,
     'test label': `https://${req.headers.host}/labels/840950`,
     'test master': `https://${req.headers.host}/masters/74177`,
-    // AHHAHAA you are here
-    // not me, my cursor
-    // me cursor
     'test search': `https://${req.headers.host}/database/search?page=10&per_page=5&q=nirvana`,
     help: 'https://glitch.com/edit/#!/edapi'
   })
