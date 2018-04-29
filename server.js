@@ -70,6 +70,28 @@ app.get('/', (req, res) => {
   })
 })
 
+app.get('/oskar/:id', cache, async (req, res) => {
+  const key = req.originalUrl
+  // If cache exists return it
+	let cache = await redis.get(key)
+  if (cache) {
+    console.log(`using cache for "${key}"`, typeof cache)
+    res.json(JSON.parse(cache))
+    return
+  }
+  
+  // …otherwise overwrite "res.send" to allow saving cache before sending response
+  res.sendResponse = res.json
+  res.json = (body) => {
+    console.log(`no cache found for "${key}". creating cache`)
+    redis.set(key, body, 'EX', CACHE_SECONDS)
+    res.sendResponse(body)
+  }
+  
+  const data = await db.getRelease(req.params.id)
+  res.json(data)
+})
+
 app.get('/releases/:id', cache, async (req, res) => {
   const data = await db.getRelease(req.params.id)
   res.send(data)
