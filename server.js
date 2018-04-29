@@ -64,9 +64,6 @@ app.get('/', (req, res) => {
     'test release': `https://${req.headers.host}/releases/6980600`,
     'test label': `https://${req.headers.host}/labels/840950`,
     'test master': `https://${req.headers.host}/masters/74177`,
-    // AHHAHAA you are here
-    // not me, my cursor
-    // me cursor
     'test search': `https://${req.headers.host}/database/search?page=10&per_page=5&q=nirvana`,
     help: 'https://glitch.com/edit/#!/edapi'
   })
@@ -99,6 +96,11 @@ app.get('/database/search', cache, async (req, res) => {
 
 app.get('/labels/:id/releases', cache, async (req, res) => {
   const data = await db.getLabelReleases(req.params.id)
+  res.send(data)
+})
+
+app.get('/artists/:id/releases', cache, async (req, res) => {
+  const data = await db.getArtistReleases(req.params.id)
   res.send(data)
 })
 
