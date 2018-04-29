@@ -6,12 +6,16 @@ const app = express()
 // Allow cross-origin requests
 app.use(cors())
 
+
+
 // Start Discogs API client
 const Discogs = require('disconnect').Client
 const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
 	consumerKey: process.env.DISCOGS_KEY, 
 	consumerSecret: process.env.DISCOGS_SECRET
 }).database()
+
+
 
 // Start cache with redis
 const Redis = require('ioredis')
@@ -34,6 +38,7 @@ const redis = new Redis(REDIS_URL)
 redis.on('error', err => console.log('redis err', err))
 redis.on('connect', () => console.log('connected to redis'))
 redis.on('end', () => console.log('disconnected from redis'))
+
 
 
 // Express middleware for caching
@@ -68,28 +73,6 @@ app.get('/', (req, res) => {
     'test search': `https://${req.headers.host}/database/search?page=10&per_page=5&q=nirvana`,
     help: 'https://glitch.com/edit/#!/edapi'
   })
-})
-
-app.get('/oskar/:id', cache, async (req, res) => {
-  const key = req.originalUrl
-  // If cache exists return it
-	let cache = await redis.get(key)
-  if (cache) {
-    console.log(`using cache for "${key}"`, typeof cache)
-    res.json(JSON.parse(cache))
-    return
-  }
-  
-  // …otherwise overwrite "res.send" to allow saving cache before sending response
-  res.sendResponse = res.json
-  res.json = (body) => {
-    console.log(`no cache found for "${key}". creating cache`)
-    redis.set(key, body, 'EX', CACHE_SECONDS)
-    res.sendResponse(body)
-  }
-  
-  const data = await db.getRelease(req.params.id)
-  res.json(data)
 })
 
 app.get('/releases/:id', cache, async (req, res) => {
