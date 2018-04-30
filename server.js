@@ -65,6 +65,8 @@ async function cache(req, res, next) {
   next()
 }
 
+// console.log(err.message) // oh no!
+
 app.get('/', (req, res) => {
   res.send({
     'test release': `https://${req.headers.host}/releases/6980600`,
@@ -108,6 +110,10 @@ app.get('/labels/:id/releases', cache, async (req, res) => {
 app.get('/artists/:id/releases', cache, async (req, res) => {
   const data = await db.getArtistReleases(req.params.id)
   res.send(data)
+})
+
+app.use(function (err, req, res, next) {
+  if (err) console.log(err.message)
 })
 
 const listener = app.listen(process.env.PORT, function() {
