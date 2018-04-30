@@ -66,10 +66,6 @@ async function cache(req, res, next) {
 }
 
 let wrap = fn => (...args) => fn(...args).catch(args[2])
-app.get('/oskar/:id', wrap(async (req, res) => {
-  const data = await db.getRelease(req.params.id)
-  res.json(data)
-}))
 
 app.get('/', (req, res) => {
   res.send({
@@ -90,45 +86,46 @@ app.get('/releases/:id', cache, async (req, res, next) => {
   }
 })
 
-app.get('/labels/:id', cache, async (req, res) => {
+app.get('/labels/:id', cache, wrap(async (req, res) => {
   const data = await db.getLabel(req.params.id)
   res.send(data)
-})
+}))
 
-app.get('/masters/:id', cache, async (req, res) => {
+app.get('/masters/:id', cache, wrap(async (req, res) => {
   const data = await db.getMaster(req.params.id)
   res.send(data)
-})
+}))
 
-app.get('/artists/:id', cache, async (req, res) => {
+app.get('/artists/:id', cache, wrap(async (req, res) => {
   const data = await db.getArtist(req.params.id)
   res.send(data)
-})
+}))
 
-app.get('/database/search', cache, async (req, res) => {
+app.get('/database/search', cache, wrap(async (req, res) => {
   const data = await db.search(req.params.search)
   res.send(data)
-})
+}))
 
-app.get('/labels/:id/releases', cache, async (req, res) => {
+app.get('/labels/:id/releases', cache, wrap(async (req, res) => {
   const data = await db.getLabelReleases(req.params.id)
   res.send(data)
-})
+}))
 
-app.get('/artists/:id/releases', cache, async (req, res) => {
+app.get('/artists/:id/releases', cache, wrap(async (req, res) => {
   const data = await db.getArtistReleases(req.params.id)
-  console.log({data})
   res.send(data)
-})
+}))
 
-app.use(function (err, req, res, next) {
+function errorHandler (err, req, res, next) {
   // console.log(err.statusCode, err.message)
   res.status(err.statusCode).json({
     errors: {
       msg: err.message
     }
   })
-})
+}
+
+app.use(errorHandler)
 
 const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
