@@ -1,4 +1,5 @@
 dependencies:
+  compression: 1.7.2
   cors: 2.8.4
   disconnect: 1.2.1
   express: 4.16.3
@@ -50,6 +51,29 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-dlRVYIWmUzCTKi6LWXb44tCz5BQ=
+  /compressible/2.0.13:
+    dependencies:
+      mime-db: 1.33.0
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-DRAgq5JLL9tNYnmHXH1tq6a6p6k=
+  /compression/1.7.2:
+    dependencies:
+      accepts: 1.3.5
+      bytes: 3.0.0
+      compressible: 2.0.13
+      debug: 2.6.9
+      on-headers: 1.0.1
+      safe-buffer: 5.1.1
+      vary: 1.1.2
+    dev: false
+    engines:
+      node: '>= 0.8.0'
+    resolution:
+      integrity: sha1-qv+81qr4VLROuygDU9WtFlH1mmk=
+      tarball: 'http://registry.npmjs.org/compression/-/compression-1.7.2.tgz'
   /content-disposition/0.5.2:
     dev: false
     engines:
@@ -388,6 +412,12 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-IPEzZIGwg811M3mSoWlxqi2QaUc=
+  /on-headers/1.0.1:
+    dev: false
+    engines:
+      node: '>= 0.8'
+    resolution:
+      integrity: sha1-ko9dD0cNSTQmUepnlLCFfBAGk/c=
   /parseurl/1.3.2:
     dev: false
     engines:
@@ -520,6 +550,7 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 5
 shrinkwrapVersion: 3
 specifiers:
+  compression: ^1.7.2
   cors: ^2.8.4
   disconnect: ^1.2.1
   express: ^4.16.3

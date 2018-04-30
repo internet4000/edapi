@@ -2,11 +2,15 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
+const compression = require('compression')
+
+// Compress all responses
+app.use(compression())
 
 // Allow cross-origin requests
 app.use(cors())
 
-
+// … at the end of this file we do error handling.
 
 // Start Discogs API client
 const Discogs = require('disconnect').Client
