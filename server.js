@@ -65,7 +65,11 @@ async function cache(req, res, next) {
   next()
 }
 
-// console.log(err.message) // oh no!
+let wrap = fn => (...args) => fn(...args).catch(args[2])
+app.get('/oskar/:id', wrap(async (req, res) => {
+  const data = await db.getRelease(req.params.id)
+  res.json(data)
+}))
 
 app.get('/', (req, res) => {
   res.send({
@@ -77,9 +81,13 @@ app.get('/', (req, res) => {
   })
 })
 
-app.get('/releases/:id', cache, async (req, res) => {
-  const data = await db.getRelease(req.params.id)
-  res.send(data)
+app.get('/releases/:id', cache, async (req, res, next) => {
+  try {
+    const data = await db.getRelease(req.params.id)
+    res.send(data)
+  } catch(err) {
+    next(err)
+  }
 })
 
 app.get('/labels/:id', cache, async (req, res) => {
@@ -109,11 +117,17 @@ app.get('/labels/:id/releases', cache, async (req, res) => {
 
 app.get('/artists/:id/releases', cache, async (req, res) => {
   const data = await db.getArtistReleases(req.params.id)
+  console.log({data})
   res.send(data)
 })
 
 app.use(function (err, req, res, next) {
-  if (err) console.log(err.message)
+  // console.log(err.statusCode, err.message)
+  res.status(err.statusCode).json({
+    errors: {
+      msg: err.message
+    }
+  })
 })
 
 const listener = app.listen(process.env.PORT, function() {
