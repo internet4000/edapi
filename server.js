@@ -106,7 +106,7 @@ app.get('/artists/:id', cache, wrap(async (req, res) => {
 }))
 
 app.get('/database/search', cache, wrap(async (req, res) => {
-  const data = await db.search(req.params.search)
+  const data = await db.search(req.params)
   res.send(data)
 }))
 
