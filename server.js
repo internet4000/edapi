@@ -105,8 +105,10 @@ app.get('/artists/:id', cache, wrap(async (req, res) => {
   res.send(data)
 }))
 
-app.get('/database/search', cache, wrap(async (req, res) => {
-  const data = await db.search(req.params)
+app.get('/database/search', wrap(async (req, res) => {
+  if (!req.query.q) req.query.q = '
+  console.log(req.params, req.query)
+  const data = await db.search(req.query)
   res.send(data)
 }))
 
