@@ -12,8 +12,8 @@ This a node.js proxy api for Discogs. It…
 
 ## How does it work?
 
-1. [Redis database on IBM Cloud](https://www.ibm.com/blogs/bluemix/2018/02/ibm-cloud-compose-redis-available-tls-encryption/)
-2. Express.js API
+1. Create free Redis database on https://redislabs.com/
+2. Express.js API with middleware to cache
 3. `disconnect` module for speaking with Discogs
 4. `redisio` module for speaking with Redis
 5. A middleware function that either returns cache OR runs route and sets cache
