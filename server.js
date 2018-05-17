@@ -12,12 +12,14 @@ app.use(cors())
 
 // … at the end of this file we do error handling.
 
+
+
 // Start Discogs API client
 const Discogs = require('disconnect').Client
 const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
 	consumerKey: process.env.DISCOGS_KEY, 
 	consumerSecret: process.env.DISCOGS_SECRET
-}).database()
+}).setConfig({outputFormat: 'html'}).database()
 
 
 
