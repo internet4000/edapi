@@ -15,11 +15,13 @@ app.use(cors())
 
 
 // Start Discogs API client
-const Discogs = require('disconnect').Client
-const db = new Discogs('ExplorerDiscogsApi/0.0.0', {
+const DiscogsClient = require('disconnect').Client
+const client = new DiscogsClient('ExplorerDiscogsApi/0.0.0', {
 	consumerKey: process.env.DISCOGS_KEY, 
 	consumerSecret: process.env.DISCOGS_SECRET
-}).setConfig({outputFormat: 'html'}).database()
+}).setConfig({outputFormat: 'html'})
+
+const db = client.database()
 
 
 
@@ -102,7 +104,7 @@ app.get('/masters/:id', cache, wrap(async (req, res) => {
   res.send(data)
 }))
 
-app.get('/artists/:id', cache, wrap(async (req, res) => {
+app.get('/artists/:id', wrap(async (req, res) => {
   const data = await db.getArtist(req.params.id)
   res.send(data)
 }))
