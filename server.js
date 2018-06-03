@@ -29,7 +29,8 @@ const db = client.database()
 const Redis = require('ioredis')
 const { URL } = require('url')
 const { REDIS_URL } = process.env
-const CACHE_SECONDS = 86400 // 24 hours
+const HOUR = 3600
+const CACHE_SECONDS = HOUR * 48
 
 if (REDIS_URL === undefined) {
 	console.error('Please set the REDIS_URL environment variable')
