@@ -66,6 +66,9 @@ async function cache(req, res, next) {
   res.sendResponse = res.send
   res.send = (body) => {
     console.log(`no cache found for "${key}". creating cache`)
+    if (body.errors || body.error) {
+      console.log('are we caching an error?', body)
+    }
     redis.set(key, body, 'EX', CACHE_SECONDS)
     res.sendResponse(body)
   }
@@ -89,6 +92,9 @@ app.get('/', (req, res) => {
 app.get('/releases/:id', cache, async (req, res, next) => {
   try {
     const data = await db.getRelease(req.params.id)
+    if (data.errors) {
+      console.log('nononono', data)
+    }
     res.send(data)
   } catch(err) {
     next(err)
