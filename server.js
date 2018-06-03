@@ -115,13 +115,13 @@ app.get('/database/search', wrap(async (req, res) => {
   res.send(data)
 }))
 
-app.get('/labels/:id/releases', cache, wrap(async (req, res) => {
-  const data = await db.getLabelReleases(req.params.id)
+app.get('/labels/:id/releases', wrap(async (req, res) => {
+  const data = await db.getLabelReleases(req.params.id, req.query)
   res.send(data)
 }))
 
-app.get('/artists/:id/releases', cache, wrap(async (req, res) => {
-  const data = await db.getArtistReleases(req.params.id)
+app.get('/artists/:id/releases', wrap(async (req, res) => {
+  const data = await db.getArtistReleases(req.params.id, req.query)
   res.send(data)
 }))
 
