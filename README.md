@@ -20,10 +20,5 @@ This a node.js proxy api for Discogs. It…
 
 ## Does it work?
 
-How to test cache response speed in the terminal
-
-```shell
-for x in 1 2 3 4 5 6 7 8 9 10
-  curl -s https://edapi.glitch.me/releases/6980600 -o /dev/null -w "\n {time_total}"
-end
-```
+You can test the cache response speed in the terminal.
+Run the `./test-performance.sh` script.
