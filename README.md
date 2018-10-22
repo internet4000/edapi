@@ -20,5 +20,6 @@ This a node.js proxy api for Discogs. It…
 
 ## Does it work?
 
-You can test the cache response speed in the terminal.
-Run the `./test-performance.sh` script.
+Test the cache response speed in the terminal with `./test-performance.sh`.
+You might need to `chmod +x test-performance.sh` as well.
+
