@@ -7,8 +7,9 @@ This a node.js proxy api for Discogs. It…
 
 ## How to use
 
-1. Deploy this repo to any node host (remember to set keys in `.env` file)
-2. Where you'd normally request `api.discogs.com`, change it to `edapi.glitch.com`
+1. Set environment variables in a `.env` file
+1. Deploy this repo to any node host 
+2. Replace `api.discogs.com` with `edapi.glitch.com` in your requests
 
 ## How does it work?
 

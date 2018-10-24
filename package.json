@@ -6,23 +6,21 @@
   "scripts": {
     "start": "node server.js"
   },
-  "dependencies": {
-    "disconnect": "^1.2.1",
-    "ioredis": "^3.2.2",
-    "cors": "^2.8.4",
-    "compression": "^1.7.2",
-    "express": "^4.16.3"
-  },
-  "engines": {
-    "node": "8.x"
-  },
   "repository": {
     "url": "https://glitch.com/edit/#!/edapi"
   },
   "license": "MIT",
   "keywords": [
     "node",
-    "glitch",
+    "discogs",
     "express"
-  ]
+  ],
+  "dependencies": {
+    "compression": "^1.7.2",
+    "cors": "^2.8.4",
+    "disconnect": "^1.2.1",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.3",
+    "ioredis": "^3.2.2"
+  }
 }
