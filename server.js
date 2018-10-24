@@ -1,3 +1,6 @@
+// Load config from .env file
+require('dotenv').config()
+
 // Start express.js
 const express = require('express')
 const cors = require('cors')
@@ -146,3 +149,5 @@ app.use(errorHandler)
 const listener = app.listen(process.env.PORT, function() {
 	console.log(`Your app is listening on port ${listener.address().port}`)
 })
+
+module.exports = app
